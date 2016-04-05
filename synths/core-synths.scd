@@ -235,6 +235,22 @@ live coding them requires that you have your SuperDirt instance in an environmen
 
 	}, [\ir, \ir, \kr, \kr, \kr, \kr]).add;
 
+	SynthDef("dirt_wub" ++ numChannels, {|dryBus, effectBus, gate=1, wub=0.0, wubn=30, wubf=8, wubd=1, wubw=1, wubt=0.01|
+		var signal, mod, famp, ffreq, fmodfreq, fdepth, fwidth, fdetune;
+		signal = In.ar(dryBus, numChannels);
+		famp = LPF.kr(wub,1.5);
+		ffreq = LPF.kr(wubn.midicps,1.0);
+		fmodfreq= LPF.kr(wubf,1.0);
+		fdepth = LPF.kr(wubd, 1.0);
+		fwidth = LPF.kr(wubw,1.0);
+		fdetune = LPF.kr(wubt,1.0);
+		mod = SinOsc.ar(fmodfreq, 0, 0.5*fdepth, (-0.5)*fdepth+1.0);
+		// signal = signal + VarSaw.ar(ffreq, 0, 0.5, mod*famp);
+		signal = Splay.arFill(3, {|i| VarSaw.ar(ffreq*(1.0+((i-1)*fdetune)), 0, fwidth, mod*famp,0)});
+			//VarSaw.ar(ffreq*0.99, 0.1, 0.5, mod*famp, 0) + VarSaw.ar(ffreq*1.01, 0, 0.5, mod*famp, 0);
+		Out.ar(effectBus, signal);
+	}, [\ir,\ir,\kr,  \kr,\kr,\kr,\kr,\kr,\kr]).add;
+
 	"---- core synth defs loaded ----".postln;
 
 }.value

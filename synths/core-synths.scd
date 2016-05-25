@@ -235,7 +235,7 @@ live coding them requires that you have your SuperDirt instance in an environmen
 
 	}, [\ir, \ir, \kr, \kr, \kr, \kr]).add;
 
-	SynthDef("dirt_wub" ++ numChannels, {|dryBus, effectBus, gate=1, wub=0.0, wubn=30, wubf=8, wubd=1, wubw=1, wubt=0.01|
+	SynthDef("dirt_wub" ++ numChannels, {|dryBus, effectBus, gate=1, wub=0.0, wubn=30, wubf=8, wubd=1, wubw=0.5, wubt=0.01|
 		var signal, mod, famp, ffreq, fmodfreq, fdepth, fwidth, fdetune;
 		signal = In.ar(dryBus, numChannels);
 		famp = LPF.kr(wub,1.5);

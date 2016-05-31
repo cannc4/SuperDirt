@@ -54,7 +54,7 @@ DirtPan {
 		} {
 			output = PanAz.ar(numChannels, signal, pos: pan, level: mul, orientation: 0)
 		};
-		^value(mixingFunction ? defaultMixingFunction, output)
+		^value(mixingFunction ? defaultMixingFunction, output, pan)
 
 	}
 }

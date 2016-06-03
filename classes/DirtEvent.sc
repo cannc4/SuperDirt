@@ -19,7 +19,7 @@ DirtEvent {
 				this.getBuffer;
 				this.orderRange;
 				this.calcRange;
-				this.playSynths;
+				if(~sustain >= orbit.minSustain) { this.playSynths }; // otherwise drop it.
 			}
 		}
 	}
@@ -51,7 +51,7 @@ DirtEvent {
 			synthDesc = SynthDescLib.at(sound);
 			if(synthDesc.notNil) {
 				~instrument = sound;
-				~note = ~n;
+				~note = ~note ? ~n;
 				~freq = ~freq.value;
 				sustainControl = synthDesc.controlDict.at(\sustain);
 				~unitDuration = if(sustainControl.isNil) { 1.0 } { sustainControl.defaultValue ? 1.0 }; // use definition, if defined.
@@ -104,11 +104,8 @@ DirtEvent {
 		);
 
 
-		if (~loop > 0) { sustain = sustain * ~loop };
+		~loop !? { sustain = sustain * ~loop.abs };
 
-		if(sustain < orbit.minSustain) {
-			^this // drop it.
-		};
 
 		~fadeTime = min(orbit.fadeTime, sustain * 0.19098);
 		~fadeInTime = if(~begin != 0) { ~fadeTime } { 0.0 };

@@ -211,6 +211,19 @@ live coding them requires that you have your SuperDirt instance in an environmen
 		Out.ar(outBus, signal)
 	}, [\ir, \ir, \kr, \kr]).add;
 
+	SynthDef("dirt_wub" ++ numChannels, { |dryBus, effectBus, gate = 1, wub=0, wubn=0, wubf=2|
+		var signal, signalL, signalR, famp, fn, ffreq, notefreq;
+		famp = LPF.kr(wub, 4);
+		fn = LPF.kr(wubn,4);
+		notefreq = (fn+60).midicps;
+		ffreq = LPF.kr(wubf,4);
+		signal = VarSaw.ar(notefreq, 0, width:SinOsc.kr(ffreq).range(0.1,0.9));
+		signal = signal + VarSaw.ar(notefreq+1, 0, width:SinOsc.kr(ffreq).range(0.1,0.9));
+		signalL = signal + DelayN.ar(signal, 0.2, SinOsc.kr(ffreq/2).range(0,1)/notefreq);
+		signalR = signal + DelayN.ar(signal, 0.2, SinOsc.kr(ffreq/2, 0.5).range(0,1)/notefreq);
+		Out.ar(effectBus, HPF.ar(famp * [signalL, signalR]/ 4, 20));
+	}, [\ir, \ir, \kr, \kr]).add;
+
 	// thanks to Jost Muxfeld and James McCartney
 	// note that "size" is not room size, just a depth metaphor
 

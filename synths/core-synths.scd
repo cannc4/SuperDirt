@@ -194,7 +194,7 @@ live coding them requires that you have your SuperDirt instance in an environmen
 		}, [\ir, \ir]).add;
 	};
 
-	SynthDef("dirt_tape" ++ numChannels, { |dryBus, effectBus, gate = 1, tapeAmp=1, taped=1, tapefb= 0|
+	SynthDef("dirt_tape" ++ numChannels, { |dryBus, effectBus, gate = 1, tapeAmp=1, taped, tapefb|
 		var in = In.ar(dryBus, numChannels);
 		var maxDelayTime = 8;
 		var decayTime, delay, delayfb, loop;

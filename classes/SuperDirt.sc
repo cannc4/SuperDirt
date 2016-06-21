@@ -456,9 +456,11 @@ GlobalDirtEffect {
 		var argsChanged;
 		paramNames.do { |key|
 			var value = event[key];
-			if(state[key] != value) {
-				argsChanged = argsChanged.add(key).add(value);
-				state[key] = value;
+			if (value.notNil) {
+				if(state[key] != value) {
+					argsChanged = argsChanged.add(key).add(value);
+					state[key] = value;
+				}
 			}
 		};
 		if(argsChanged.notNil) {

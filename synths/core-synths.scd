@@ -69,8 +69,8 @@ live coding them requires that you have your SuperDirt instance in an environmen
 	SynthDef("dirt_gate" ++ numChannels, { |out, in, sustain = 1, fadeInTime = 0.001, fadeTime = 0.001, amp = 1|
 		var signal = In.ar(in, numChannels);
 		 //  doneAction: 3: free node before, which is the group with sample player and effects
-		var env = EnvGen.ar(Env([0, 1, 1, 0], [fadeInTime, sustain, fadeTime], \sin), levelScale: amp, doneAction: 5);
-		signal = signal * env * DirtGateCutGroup.ar(fadeTime, doneAction: 5);
+		var env = EnvGen.ar(Env([0, 1, 1, 0], [fadeInTime, sustain, fadeTime], \sin), levelScale: amp, doneAction: 14);
+		signal = signal * env * DirtGateCutGroup.ar(fadeTime, doneAction: 14);
 		OffsetOut.ar(out, signal);
 		ReplaceOut.ar(in, Silent.ar(numChannels)) // clears bus signal for subsequent synths
 	}, [\ir, \ir, \ir, \ir, \ir, \ir]).add;
@@ -200,7 +200,7 @@ live coding them requires that you have your SuperDirt instance in an environmen
 		var decayTime, delay, delayfb, loop;
 
 		delayfb = tapefb.clip(0, 0.99);
-		delay = (Lag.kr(taped, 0.1) + LPF.kr(PinkNoise.kr(0.010), 4)).clip(0.001, maxDelayTime);
+		delay = (Lag.kr(taped, 0.1) + LPF.kr(PinkNoise.kr(0.015), 1)).clip(0.001, maxDelayTime);
 		loop = LocalIn.ar(numChannels);
 		loop = DelayL.ar((loop*delayfb) + (in*tapeAmp), maxDelayTime, delay);
 		loop = LPF.ar(tanh(loop)*1.2, 2000);

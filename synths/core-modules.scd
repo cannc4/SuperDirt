@@ -43,6 +43,8 @@ this may be refacored later.
 					sustain: ~sustain,
 					speed: ~speed,
 					endSpeed: ~endSpeed,
+					vibrato: ~vibrato,
+					vrate: ~vrate,
 					begin: ~begin,
 					end: ~end,
 					loop: ~loop,

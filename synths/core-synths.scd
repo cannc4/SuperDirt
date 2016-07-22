@@ -22,12 +22,12 @@ live coding them requires that you have your SuperDirt instance in an environmen
 
 		var name = format("dirt_sample_%_%", sampleNumChannels, numChannels);
 
-		SynthDef(name, { |out, bufnum, sustain = 1, begin=0, end=1, speed = 1, endSpeed = 1, pan = 0|
+		SynthDef(name, { |out, bufnum, sustain = 1, begin=0, end=1, speed = 1, endSpeed = 1, pan = 0, vrate=0, vibrato=0|
 
 			var sound, rate, phase, sawrate, numFrames;
 
 			// playback speed
-			rate = Line.kr(speed, endSpeed, sustain);
+			rate = Line.kr(speed, endSpeed, sustain) * (2**SinOsc.kr(vrate,0,vibrato/12));
 
 			// sample phase
 			// BufSampleRate adjusts the rate if the sound file doesn't have the same rate as the soundcard

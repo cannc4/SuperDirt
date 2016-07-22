@@ -47,6 +47,8 @@ this may be refacored later.
 					end: ~end,
 					loop: ~loop,
 					pan: ~pan,
+					vrate: ~vrate,
+					vibrato: ~vibrato,
 					out: ~out
 				])
 			} {

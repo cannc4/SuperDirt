@@ -163,6 +163,7 @@ DirtEvent {
 		server.makeBundle(latency, { // use this to build a bundle
 
 			~delayAmp = ~delay ? 0.0; // for clarity
+			~tapeAmp = ~tape ? 0.0;
 
 			orbit.globalEffects.do { |x| x.set(currentEnvironment) };
 

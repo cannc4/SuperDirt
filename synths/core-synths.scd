@@ -45,7 +45,12 @@ live coding them requires that you have your SuperDirt instance in an environmen
 				interpolation: 4 // cubic interpolation
 			);
 
-			sound = DirtPan.ar(sound, numChannels, pan);
+			if (sound.numChannels == 1) {
+				sound = DirtPan.ar(sound, numChannels, pan);
+			} {
+				sound = Balance2.ar(sound[0], sound[1], pan*2-1);
+				sound = DirtPan.ar(sound, numChannels, 0.5, 1, {|x| x});
+			};
 
 			Out.ar(out, sound)
 		}, [\ir, \ir, \ir, \ir, \ir, \ir, \ir, \ir]).add;

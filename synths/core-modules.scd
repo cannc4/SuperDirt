@@ -37,18 +37,27 @@ this may be refacored later.
 	{ |dirtEvent|
 		if(~diversion.value.isNil) {
 			if(~buffer.notNil) {
-				// argumets could be omitted using getMsgFunc, but for making it easier to understand, we write them out
-				dirtEvent.sendSynth(~instrument,  [
-					bufnum: ~buffer,
-					sustain: ~sustain,
-					speed: ~speed,
-					endSpeed: ~endSpeed,
-					begin: ~begin,
-					end: ~end,
-					loop: ~loop,
-					pan: ~pan,
-					out: ~out
-				])
+				if (~buffer.isNumber) {
+					// argumets could be omitted using getMsgFunc, but for making it easier to understand, we write them out
+					dirtEvent.sendSynth(~instrument,  [
+						bufnum: ~buffer,
+						sustain: ~sustain,
+						speed: ~speed,
+						endSpeed: ~endSpeed,
+						begin: ~begin,
+						end: ~end,
+						loop: ~loop,
+						pan: ~pan,
+						out: ~out
+					])
+				} {
+					dirtEvent.sendSynth(~instrument,  [
+						bufnum1: ~buffer[0], bufnum2:~buffer[1],
+						sustain: ~sustain, speed: ~speed, endSpeed: ~endSpeed, begin: ~begin, end: ~end,
+						loop: ~loop, pan: ~pan, out: ~out
+					])
+				}
+
 			} {
 				if(~instrument.isNil) {
 					"instrument not found: %".format(~sound).postln

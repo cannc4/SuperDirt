@@ -59,7 +59,16 @@ DirtEvent {
 				//if(sustainControl.isNil) { 1.0 } { sustainControl.defaultValue ? 1.0 }
 
 			} {
-				"no synth or sample named '%' could be found.".format(sound).postln;
+				if(sound.asString.contains("^")) {
+					~instrument = format("dirt_sampleduo_%", ~numChannels);
+					// not testing for buffer validity yet!
+					buffer = [orbit.dirt.getBuffer(sound.asString.split($^)[0].asSymbol, ~n) ,
+						orbit.dirt.getBuffer(sound.asString.split($^)[1].asSymbol, ~n)];
+					~buffer = [buffer[0].bufnum, buffer[1].bufnum];
+					~unitDuration = min(buffer[0].duration, buffer[1].duration);
+				} {
+					"no synth or sample named '%' could be found.".format(sound).postln;
+				}
 			}
 		}
 	}

@@ -56,6 +56,34 @@ live coding them requires that you have your SuperDirt instance in an environmen
 		}, [\ir, \ir, \ir, \ir, \ir, \ir, \ir, \ir]).add;
 	};
 
+	// experimental sample mixing - very fragile
+	SynthDef(format("dirt_sampleduo_%", numChannels), { |out, bufnum1, bufnum2, sustain = 1, begin=0, end=1, speed = 1, endSpeed = 1, pan = 0|
+		var sound, sound1, sound2, p,q,rate, phase, sawrate, numFrames;
+		// playback speed
+		rate = Line.kr(speed, endSpeed, sustain);
+		// sample phase
+		// BufSampleRate adjusts the rate if the sound file doesn't have the same rate as the soundcard
+		//phase =  Sweep.ar(1, rate * BufSampleRate.ir(bufnum)) + (BufFrames.ir(bufnum) * begin);
+		numFrames = BufFrames.ir(bufnum1);
+		sawrate = rate * BufSampleRate.ir(bufnum1) / (absdif(begin, end) * numFrames);
+		phase = (speed.sign * LFSaw.ar(sawrate, 1)).range(begin,end) * numFrames;
+		sound1 = BufRd.ar(
+			numChannels: 1, bufnum: bufnum1, phase: phase, loop: 0, interpolation: 4 // cubic interpolation
+		);
+		numFrames = BufFrames.ir(bufnum2);
+		//sawrate = rate * BufSampleRate.ir(bufnum2) / (absdif(begin, end) * numFrames) * (sound1*0.5+1) ; // FM mod
+		sawrate = rate * BufSampleRate.ir(bufnum2) / (absdif(begin, end) * numFrames) ;
+		phase = (speed.sign * LFSaw.ar(sawrate, 1)).range(begin,end) * numFrames;
+		sound2 = BufRd.ar(
+			numChannels: 1, bufnum: bufnum2, phase: phase, loop: 0, interpolation: 4 // cubic interpolation
+		);
+		p = sound1 * (2**31);
+		q = sound2 * (2**31);
+		sound = DirtPan.ar(bitXor(p, q) / (2**31), numChannels, pan);
+		//sound = DirtPan.ar(sound2, numChannels, pan);
+		Out.ar(out, sound)
+	}, [\ir, \ir, \ir, \ir, \ir, \ir, \ir, \ir]).add;
+
 	/*
 
 	Bus Routing Monitor

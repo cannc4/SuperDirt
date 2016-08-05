@@ -46,6 +46,8 @@ this may be refacored later.
 						endSpeed: ~endSpeed,
 						begin: ~begin,
 						end: ~end,
+						vibrato: ~vibrato,
+						vrate: ~vrate,
 						loop: ~loop,
 						pan: ~pan,
 						out: ~out

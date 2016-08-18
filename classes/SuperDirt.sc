@@ -287,6 +287,7 @@ DirtOrbit {
 			GlobalDirtEffect(\dirt_delay, [\delaytime, \delayfeedback, \delayAmp, \lock, \cps]),
 			GlobalDirtEffect(\dirt_tape, [\tapeAmp, \tapefb, \taped, \tapec]),
 			GlobalDirtEffect(\dirt_reverb, [\size, \room, \dry]),
+			GlobalDirtEffect(\dirt_wub, [\wub, \wubn, \wubf, \wubd, \wubt, \wubw, \wubp]),
 			GlobalDirtEffect(\dirt_monitor, [\dirtOut])
 		]
 	}

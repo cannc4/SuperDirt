@@ -162,6 +162,11 @@ DirtEvent {
 		server.makeBundle(latency, { // use this to build a bundle
 
 			~delayAmp = ~delay ? 0.0; // for clarity
+			~wubw = ~wubw ? 0.5; // non-zero wub defaults go here
+			~wubd = ~wubd ? 1;
+			~wubf = ~wubf ? 8;
+			~wubt = ~wubt ? 0.1;
+			~wubp = ~wubp ? 1;
 
 			orbit.globalEffects.do { |x| x.set(currentEnvironment) };
 

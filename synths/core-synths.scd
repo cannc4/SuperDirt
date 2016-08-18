@@ -254,6 +254,40 @@ live coding them requires that you have your SuperDirt instance in an environmen
 
 	}, [\ir, \ir]).add;
 
+	// wub - an "always-on" monophonic (per orbit) synth
+	// to access this from Tidal, you'll need to define all the parameters, like this;
+	//     let (wubn, _) = pF "wubn" (Just 0)
+	// parameters are
+	// wub - amplitude
+	// wubn - note value (can be fractional)
+	// wubf - frequency of amplitude modulation (Hz)
+	// wubd - depth of amplitude modulation
+	// wubw - duty cycle width for VarSaw
+	// wubt - detune amount (in semitones)
+	// wubp - portamento lag time (in seconds)
+	// you can add your own params, you'll need to also put them in initDefaultGlobalEffects in SuperDirt.sc
+	// and if you want the params to have non-zero values when left unspecified in Tidal, add that to playSynths in DirtEvent.sc
+	// (the defaults in the SynthDef below only apply when the synth is first started, on SuperDirt bootup)
+	SynthDef("dirt_wub" ++ numChannels, {|dryBus, effectBus, gate=1, wub=0.0,
+		wubn=0, wubf=8, wubd=1, wubw=0.5, wubt=0.1, wubp=1.0|
+		var signal, mod, famp, ffreq, fmodfreq, fdepth, fwidth, fdetune, env;
+		// the envelope keeps things from playing infinitely after you hush Tidal
+		// though you can always explicitly send a `wub "0"` message to stop it
+		// side effect is that if you don't change parameters the wub eventually goes away
+		// if you don't like this just remove the `env` from the final line
+		env = EnvGen.ar(Env.perc(0.01, 20), gate:Changed.kr(wub+wubn+wubf+wubd+wubw+wubt));
+		famp = Lag.kr(wub, 0.7);
+		// next line is portamento, the lag time itself is a parameter
+		ffreq = Lag.kr((wubn+60).midicps, wubp);
+		fmodfreq= Lag.kr(wubf,1.0);
+		fdepth = Lag.kr(wubd, 1.0);
+		fwidth = Lag.kr(wubw,1.0);
+		fdetune = Lag.kr(wubt,1.0);
+		mod = SinOsc.ar(fmodfreq).range(1.0-fdepth, 1.0);
+		signal =  Splay.arFill(3, {|i| VarSaw.ar(ffreq * (2**((i-1)*fdetune/12)), 0, fwidth, mod*famp,0)});
+		Out.ar(effectBus, signal*env);
+	}, [\ir,\ir,\kr,  \kr,\kr,\kr,\kr,\kr,\kr]).add;
+
 	"---- core synth defs loaded ----".postln;
 
 }.value

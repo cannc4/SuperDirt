@@ -321,8 +321,8 @@ live coding them requires that you have your SuperDirt instance in an environmen
 	// and if you want the params to have non-zero values when left unspecified in Tidal, add that to playSynths in DirtEvent.sc
 	// (the defaults in the SynthDef below only apply when the synth is first started, on SuperDirt bootup)
 	SynthDef("dirt_wub" ++ numChannels, {|dryBus, effectBus, gate=1, wub=0.0,
-		wubn=0, wubf=8, wubd=1, wubw=0.5, wubt=0.1, wubp=1.0|
-		var signal, mod, famp, ffreq, fmodfreq, fdepth, fwidth, fdetune, env;
+		wubn=0, wubf=8, wubd=1, wubw=0.5, wubt=0.1, wubp=1.0, wubv=0|
+		var signal, mod, famp, ffreq, fmodfreq, fdepth, fwidth, fdetune, env, farray, fvoice;
 		// the envelope keeps things from playing infinitely after you hush Tidal
 		// though you can always explicitly send a `wub "0"` message to stop it
 		// side effect is that if you don't change parameters the wub eventually goes away
@@ -335,10 +335,36 @@ live coding them requires that you have your SuperDirt instance in an environmen
 		fdepth = Lag.kr(wubd, 1.0);
 		fwidth = Lag.kr(wubw,1.0);
 		fdetune = Lag.kr(wubt,1.0);
+		fvoice = Lag.kr(wubv,1.0);
 		mod = SinOsc.ar(fmodfreq).range(1.0-fdepth, 1.0);
-		signal =  Splay.arFill(3, {|i| VarSaw.ar(ffreq * (2**((i-1)*fdetune/12)), 0, fwidth, mod*famp,0)});
-		Out.ar(effectBus, signal*env);
+		farray = ffreq * (2**([-1,0,1]*fdetune/12));
+		signal = SelectX.ar(fvoice, [
+			Splay.ar(VarSaw.ar(farray, 0, fwidth)),
+			Splay.ar(SinOscFB.ar(farray, fwidth)),
+			Splay.ar(FBSineN.ar(22050, SinOsc.kr(fmodfreq*1.01).range(1,1+fdepth), SinOsc.kr(fmodfreq*0.99).range(0,fwidth), 1, farray/22050*2pi, 0, 0)),
+			Splay.ar(Pulse.ar(farray, fwidth* (SinOsc.kr(fmodfreq).range(0.9,1.1))))
+		]);
+		Out.ar(effectBus, signal*env*mod*famp);
 	}, [\ir,\ir,\kr,  \kr,\kr,\kr,\kr,\kr,\kr]).add;
+
+	SynthDef("dirt_leslie" ++ numChannels, { |dryBus, effectBus, gate = 1, leslie=0, lrate=6.7, lsize=0.3|
+		var in, distance, throb, sound1, sound2, bal1, bal2;
+		in = In.ar(dryBus, numChannels);
+		ReplaceOut.ar(dryBus, in*(1-leslie));
+		distance = SinOsc.ar(Lag.kr(lrate,10), 0).range(0, lsize);
+		throb = SinOsc.ar(Lag.kr(lrate*0.8, 20), 0).range(0,lsize*1.3);
+		bal1 = SinOsc.kr(Lag.kr(lrate*0.8, 4), pi/2).range(-0.2,0.2);
+		bal2 = SinOsc.kr(Lag.kr(lrate,2), pi/2).range(-0.4, 0.4);
+		sound2 = HPF.ar(in, 800);
+		sound1 = in - sound2;
+		sound1 = leslie * (1.0 - throb) * sound1;
+		sound1 = Balance2.ar(sound1[0], sound1[1], bal1);
+		sound2 = DelayC.ar(sound2, 1, distance / 343);
+		sound2 = leslie * (1.0 - distance) * sound2;
+		sound2 = Balance2.ar(sound2[0], sound2[1], bal2);
+		Out.ar(effectBus, 1.2*(sound1+sound2));
+	}, [\ir, \ir]).add;
+
 
 	"---- core synth defs loaded ----".postln;
 

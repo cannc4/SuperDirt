@@ -1,3 +1,18 @@
+# SuperDirt 0.9-bgoldperformance branch
+This is a fork of the 0.9-dev branch of SuperDirt, which in turn requires the 0.9-dev version of Tidal. It implements a few changes and new features that I find useful for performing live, including:
+
+* sample vibrato using `vibrato` and `vrate` parameters
+* interprets `pan` as a balance control for stereo samples instead of mixing down to mono
+* tape-style delay as a new global effect `tape` (with adjustable delay, feedback, and compression)
+* a monophonic drone synthesizer as a new global effect `wub` (with numerous other parameters)
+* Leslie modulation as a new global effect `leslie` (with adjustable rate and depth)
+
+Making full use of many of these features requires evaluating some Tidal expressions to define new parameters, see my SuperDirt-extra project for examples.
+
+Otherwise this version should be very similar to the 0.8 release documented below.
+
+---
+
 # SuperDirt 0.8
 SuperCollider implementation of the Dirt sampler for the Tidal programming language
 

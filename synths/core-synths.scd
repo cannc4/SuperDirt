@@ -365,6 +365,16 @@ live coding them requires that you have your SuperDirt instance in an environmen
 		Out.ar(effectBus, 1.2*(sound1+sound2));
 	}, [\ir, \ir]).add;
 
+	SynthDef("dirt_gfilter" ++ numChannels, { |dryBus, effectBus, gate = 1, gcutoff=22000, gresonance=0|
+		var in, snd, lfreq, lres;
+		lfreq = Lag.kr(gcutoff,0.1);
+		lres = Lag.kr(1.0-gresonance, 0.1);
+		in = In.ar(dryBus, numChannels);
+		ReplaceOut.ar(dryBus, in*0.0);
+		snd = RLPF.ar(in, lfreq.clip(10,20000), lres.clip(0.01,1));
+		Out.ar(effectBus, snd);
+	}, [\ir, \ir]).add;
+
 
 	"---- core synth defs loaded ----".postln;
 

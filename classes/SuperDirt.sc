@@ -289,6 +289,7 @@ DirtOrbit {
 			GlobalDirtEffect(\dirt_reverb, [\size, \room, \dry]),
 			GlobalDirtEffect(\dirt_wub, [\wub, \wubn, \wubf, \wubd, \wubt, \wubw, \wubp, \wubv]),
 			GlobalDirtEffect(\dirt_leslie, [\leslie, \lrate, \lsize]),
+			GlobalDirtEffect(\dirt_gfilter, [\gcutoff, \gresonance]),
 			GlobalDirtEffect(\dirt_monitor, [\dirtOut])
 		]
 	}

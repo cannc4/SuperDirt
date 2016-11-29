@@ -177,6 +177,8 @@ DirtEvent {
 			~wubf = ~wubf ? 8;
 			~wubt = ~wubt ? 0.1;
 			~wubp = ~wubp ? 1;
+			~gcutoff = ~gcutoff ? 22000;
+			~gresonance = ~gresonance ? 0;
 
 			orbit.globalEffects.do { |x| x.set(currentEnvironment) };
 

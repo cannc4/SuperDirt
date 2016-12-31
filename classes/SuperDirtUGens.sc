@@ -41,18 +41,19 @@ DirtPan {
 		*/
 	}
 
-	*ar { |signal, numChannels, pan = 0.0, mul = 1.0, mixingFunction|
+	*ar { |signal, numChannels, pan = 0.0, mul = 1.0, mixingFunction, panTo = 0.0, panDur = 1.0|
 
 		var output;
 
 		pan = pan * 2 - 1; // convert unipolar (0..1) range into bipolar compatible one
+		panTo = panTo * 2 - 1;
 		signal = signal.asArray; // always keep the same shape
 
 
 		if(numChannels == 2) {
-			output = Pan2.ar(signal, pan, mul)
+			output = Pan2.ar(signal, Line.ar(pan, panTo, panDur), mul)
 		} {
-			output = PanAz.ar(numChannels, signal, pos: pan, level: mul, orientation: 0)
+			output = PanAz.ar(numChannels, signal, pos: Line.ar(pan, panTo, panDur), level: mul, orientation: 0)
 		};
 		^value(mixingFunction ? defaultMixingFunction, output)
 

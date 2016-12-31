@@ -22,7 +22,7 @@ live coding them requires that you have your SuperDirt instance in an environmen
 
 		var name = format("dirt_sample_%_%", sampleNumChannels, numChannels);
 
-		SynthDef(name, { |out, bufnum, sustain = 1, begin=0, end=1, speed = 1, endSpeed = 1, pan = 0|
+		SynthDef(name, { |out, bufnum, sustain = 1, begin=0, end=1, speed = 1, endSpeed = 1, pan = 0, panTo = 0|
 
 			var sound, rate, phase, sawrate, numFrames;
 
@@ -45,7 +45,7 @@ live coding them requires that you have your SuperDirt instance in an environmen
 				interpolation: 4 // cubic interpolation
 			);
 
-			sound = DirtPan.ar(sound, numChannels, pan);
+			sound = DirtPan.ar(sound, numChannels, pan, panTo:panTo, panDur:sustain);
 
 			Out.ar(out, sound)
 		}, [\ir, \ir, \ir, \ir, \ir, \ir, \ir, \ir]).add;

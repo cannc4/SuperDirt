@@ -184,7 +184,7 @@ live coding them requires that you have your SuperDirt instance in an environmen
 			// this would have to be an explicit signal from sclang
 
 			signal = signal * EnvGen.kr(Env.asr, gate, doneAction:2);
-			signal = signal * delayAmp.lag(0.01);
+			signal = signal * delayAmp;
 
 			DirtPause.ar(signal, graceTime:4);
 
@@ -208,7 +208,7 @@ live coding them requires that you have your SuperDirt instance in an environmen
 
 			signal = CombL.ar(signal, maxDelayTime, delaytime.lag(1), decayTime);
 
-			signal = LeakDC.ar(signal) * delayAmp.lag(0.01) * EnvGen.kr(Env.asr, gate, doneAction:2);
+			signal = LeakDC.ar(signal) * delayAmp * EnvGen.kr(Env.asr, gate, doneAction:2);
 
 			DirtPause.ar(signal, graceTime:4);
 

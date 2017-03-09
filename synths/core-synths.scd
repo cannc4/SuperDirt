@@ -216,6 +216,25 @@ live coding them requires that you have your SuperDirt instance in an environmen
 		}, [\ir, \ir]).add;
 	};
 
+	SynthDef("dirt_tape" ++ numChannels, { |dryBus, effectBus, gate = 1, tapeAmp=1, taped, tapefb, tapec|
+		var in = In.ar(dryBus, numChannels);
+		var maxDelayTime = 8;
+		var decayTime, delay, delayfb, loop;
+
+		delayfb = tapefb.clip(0, 0.99);
+		delay = (Lag.kr(taped, 0.1) + LPF.kr(PinkNoise.kr(0.015), 1)).clip(0.001, maxDelayTime); //wow
+		loop = LocalIn.ar(numChannels);
+		loop = DelayL.ar((loop*delayfb) + (in*tapeAmp), maxDelayTime, delay);
+		loop = loop * WhiteNoise.ar(0.01,1); //flutter?
+		loop = MantissaMask.ar(loop, 2);
+		loop = CompanderD.ar(loop, 0.3, 1, (1-tapec).clip(0,1), 0.005, 0.005); //compression, but could be better
+		loop = LPF.ar(tanh(loop)*1.2, 2700+SinOsc.kr(0.1,mul:20)-(1000*tapec)); //distortion and hi cutoff
+		loop = HPF.ar(loop, 20);
+		LocalOut.ar(LeakDC.ar(loop));
+		loop = loop * EnvGen.kr(Env.asr, gate, doneAction:2);
+		Out.ar(effectBus, loop);
+	}, [\ir, \ir]).add;
+
 	SynthDef("dirt_monitor" ++ numChannels, { |dryBus, effectBus, outBus, gate = 1|
 		var drySignal = In.ar(dryBus, numChannels);
 		var wetSignal = In.ar(effectBus, numChannels);

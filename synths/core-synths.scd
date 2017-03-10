@@ -228,7 +228,7 @@ live coding them requires that you have your SuperDirt instance in an environmen
 		loop = loop * WhiteNoise.ar(0.01,1); //flutter?
 		loop = MantissaMask.ar(loop, 2);
 		loop = CompanderD.ar(loop, 0.3, 1, (1-tapec).clip(0,1), 0.005, 0.005); //compression, but could be better
-		loop = LPF.ar(tanh(loop)*1.2, 2700+SinOsc.kr(0.1,mul:20)-(1000*tapec)); //distortion and hi cutoff
+		loop = LPF.ar(tanh(loop)*1.2, (2700+SinOsc.kr(0.1,mul:20)-(1000*tapec)).clip(20,10000)); //distortion and hi cutoff
 		loop = HPF.ar(loop, 20);
 		LocalOut.ar(LeakDC.ar(loop));
 		loop = loop * EnvGen.kr(Env.asr, gate, doneAction:2);

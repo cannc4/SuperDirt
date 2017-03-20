@@ -224,7 +224,7 @@ live coding them requires that you have your SuperDirt instance in an environmen
 		delayfb = tapefb.clip(0, 0.99);
 		delay = (Lag.kr(taped, 0.1) + LPF.kr(PinkNoise.kr(0.015), 1)).clip(0.001, maxDelayTime); //wow
 		loop = LocalIn.ar(numChannels);
-		loop = DelayL.ar((loop*delayfb) + (in*tapeAmp), maxDelayTime, delay);
+		loop = DelayL.ar((loop*delayfb) + (in*tapeAmp), maxDelayTime, delay*SinOsc.kr(1/delay, 0.25, 0.001, 1));
 		loop = loop * WhiteNoise.ar(0.01,1); //flutter?
 		loop = MantissaMask.ar(loop, 2);
 		loop = CompanderD.ar(loop, 0.3, 1, (1-tapec).clip(0,1), 0.005, 0.005); //compression, but could be better
